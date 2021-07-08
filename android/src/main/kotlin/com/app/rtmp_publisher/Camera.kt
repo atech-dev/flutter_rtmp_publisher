@@ -129,7 +129,8 @@ class Camera(
     @Throws(IOException::class)
     private fun prepareCameraForRecordAndStream(fps: Int, bitrate: Int?) {
 //        if (rtmpCamera != null) {
-        rtmpCamera.stopStream()
+        rtmpCamera.stopStreamRtp()
+        // rtmpCamera.stopStream()
 //            rtmpCamera = null
 //        }
         Log.i(TAG, "prepareCameraForRecordAndStream(opengl=" + useOpenGL + ", portrait: " + isPortrait + ", currentOrientation: " + currentOrientation + ", mediaOrientation: " + mediaOrientation
@@ -474,7 +475,8 @@ class Camera(
             currentRetries = 0
             publishUrl = null
             if (rtmpCamera != null) {
-                rtmpCamera!!.stopStream()
+                rtmpCamera!!.stopStreamRtp()
+                // rtmpCamera!!.stopStream()
 //                rtmpCamera = null
             }
 
@@ -604,7 +606,8 @@ class Camera(
             imageStreamReader = null
         }
         if (rtmpCamera != null) {
-            rtmpCamera!!.stopStream()
+            rtmpCamera!!.stopStreamRtp()
+            // rtmpCamera!!.stopStream()
 //            rtmpCamera = null
             bitrateAdapter = null
             publishUrl = null
@@ -631,11 +634,13 @@ class Camera(
                 // Start capturing from the camera.
                 createCaptureSession(
                         CameraDevice.TEMPLATE_RECORD,
-                        Runnable { rtmpCamera!!.startStream(url) }
+                        // Runnable { rtmpCamera!!.startStream(url) }
+                        Runnable { rtmpCamera!!.startStreamRtp(url) }
 //                        , rtmpCamera!!.inputSurface
                 )
             } else {
-                rtmpCamera!!.startStream(url)
+                rtmpCamera!!.startStreamRtp(url)
+                // rtmpCamera!!.startStream(url)
             }
             result.success(null)
         } catch (e: CameraAccessException) {
@@ -662,8 +667,9 @@ class Camera(
             createCaptureSession(
                     CameraDevice.TEMPLATE_RECORD,
                     Runnable {
-                        rtmpCamera!!.startStream(url)
-                        rtmpCamera!!.startRecord(filePath)
+                        rtmpCamera!!.startStreamRtp(url)
+                        // rtmpCamera!!.startStream(url)
+                        // rtmpCamera!!.startRecord(filePath)
                     }
 //                    , rtmpCamera!!.inputSurface
             )
@@ -787,7 +793,8 @@ class Camera(
                 }
             }
 
-            rtmpCamera!!.stopStream()
+            rtmpCamera!!.stopStreamRtp()
+            // rtmpCamera!!.stopStream()
 //            rtmpCamera = null
             activity!!.runOnUiThread {
                 dartMessenger.send(DartMessenger.EventType.RTMP_STOPPED, "Failed retry")
@@ -803,7 +810,8 @@ class Camera(
 
     override fun onDisconnectRtmp() {
         if (rtmpCamera != null) {
-            rtmpCamera!!.stopStream()
+            rtmpCamera!!.stopStreamRtp()
+            //rtmpCamera!!.stopStream()
 //            rtmpCamera = null
         }
         activity!!.runOnUiThread {
