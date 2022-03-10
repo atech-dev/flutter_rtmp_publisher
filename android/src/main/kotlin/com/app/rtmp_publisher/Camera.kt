@@ -71,7 +71,7 @@ class Camera(
 
 //    private val glView: FlutterGLSurfaceView
     private val glView: LightOpenGlView
-    private val rtmpCamera: RtmpCamera2
+    private val rtmpCamera: RtmpCamera1
 
     init {
         checkNotNull(activity) { "No activity available!" }
@@ -115,7 +115,7 @@ class Camera(
 //        renderer.addOnRendererStateChangedLister(this)
 //        glView.setRenderer(renderer)
 //        glView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
-        rtmpCamera = RtmpCamera2(glView, this)
+        rtmpCamera = RtmpCamera1(glView, this)
         updateSurfaceView()
     }
 
@@ -129,7 +129,7 @@ class Camera(
     @Throws(IOException::class)
     private fun prepareCameraForRecordAndStream(fps: Int, bitrate: Int?) {
 //        if (rtmpCamera != null) {
-        rtmpCamera.stopStreamRtp()
+        rtmpCamera.stopStream()
         // rtmpCamera.stopStream()
 //            rtmpCamera = null
 //        }
@@ -475,7 +475,7 @@ class Camera(
             currentRetries = 0
             publishUrl = null
             if (rtmpCamera != null) {
-                rtmpCamera!!.stopStreamRtp()
+                rtmpCamera!!.stopStream()
                 // rtmpCamera!!.stopStream()
 //                rtmpCamera = null
             }
@@ -606,7 +606,7 @@ class Camera(
             imageStreamReader = null
         }
         if (rtmpCamera != null) {
-            rtmpCamera!!.stopStreamRtp()
+            rtmpCamera!!.stopStream()
             // rtmpCamera!!.stopStream()
 //            rtmpCamera = null
             bitrateAdapter = null
@@ -635,11 +635,11 @@ class Camera(
                 createCaptureSession(
                         CameraDevice.TEMPLATE_RECORD,
                         // Runnable { rtmpCamera!!.startStream(url) }
-                        Runnable { rtmpCamera!!.startStreamRtp(url) }
+                        Runnable { rtmpCamera!!.startStream(url) }
 //                        , rtmpCamera!!.inputSurface
                 )
             } else {
-                rtmpCamera!!.startStreamRtp(url)
+                rtmpCamera!!.startStream(url)
                 // rtmpCamera!!.startStream(url)
             }
             result.success(null)
@@ -667,7 +667,7 @@ class Camera(
             createCaptureSession(
                     CameraDevice.TEMPLATE_RECORD,
                     Runnable {
-                        rtmpCamera!!.startStreamRtp(url)
+                        rtmpCamera!!.startStream(url)
                         // rtmpCamera!!.startStream(url)
                         // rtmpCamera!!.startRecord(filePath)
                     }
@@ -793,7 +793,7 @@ class Camera(
                 }
             }
 
-            rtmpCamera!!.stopStreamRtp()
+            rtmpCamera!!.stopStream()
             // rtmpCamera!!.stopStream()
 //            rtmpCamera = null
             activity!!.runOnUiThread {
@@ -810,7 +810,7 @@ class Camera(
 
     override fun onDisconnectRtmp() {
         if (rtmpCamera != null) {
-            rtmpCamera!!.stopStreamRtp()
+            rtmpCamera!!.stopStream()
             //rtmpCamera!!.stopStream()
 //            rtmpCamera = null
         }
