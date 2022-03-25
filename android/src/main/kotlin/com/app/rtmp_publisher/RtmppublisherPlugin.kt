@@ -14,9 +14,9 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 import io.flutter.view.TextureRegistry
 import io.flutter.embedding.engine.FlutterEngine
 
-interface PermissionStuff {
+/*interface PermissionStuff {
     fun adddListener(listener: PluginRegistry.RequestPermissionsResultListener);
-}
+}*/
 
 /** RtmppublisherPlugin */
 public class RtmppublisherPlugin : FlutterPlugin, ActivityAware {
