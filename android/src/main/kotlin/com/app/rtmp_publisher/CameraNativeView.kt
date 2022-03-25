@@ -84,11 +84,11 @@ class CameraNativeView(
         }
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         Log.d("CameraNativeView", "surfaceChanged $width $height")
     }
 
-    override fun surfaceDestroyed(holder: SurfaceHolder?) {
+    override fun surfaceDestroyed(holder: SurfaceHolder) {
         Log.d("CameraNativeView", "surfaceDestroyed")
     }
 
@@ -116,7 +116,7 @@ class CameraNativeView(
     }
 
     fun startVideoRecording(filePath: String?, result: MethodChannel.Result) {
-        val file = File(filePath)
+        val file = File(filePath!!)
         if (file.exists()) {
             result.error("fileExists", "File at path '$filePath' already exists. Cannot overwrite.", null)
             return

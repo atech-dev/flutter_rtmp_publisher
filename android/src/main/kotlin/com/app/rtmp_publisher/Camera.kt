@@ -93,7 +93,7 @@ class Camera(
 //        orientationEventListener.enable()
         val characteristics = cameraManager.getCameraCharacteristics(cameraName)
         isFrontFacing = characteristics.get(CameraCharacteristics.LENS_FACING) == CameraMetadata.LENS_FACING_FRONT
-        sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION)
+        sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
         currentOrientation = Math.round(activity.resources.configuration.orientation / 90.0).toInt() * 90
         val preset = ResolutionPreset.valueOf(resolutionPreset!!)
         recordingProfile = CameraUtils.getBestAvailableCamcorderProfileForResolutionPreset(cameraName, preset)
@@ -322,7 +322,7 @@ class Camera(
         val surfaceList: MutableList<Surface> = ArrayList()
 
         // Build Flutter surface to render to
-        val surfaceTexture = flutterTexture.surfaceTexture()
+        val surfaceTexture: SurfaceTexture = flutterTexture.surfaceTexture()
         val size = getSizePairByOrientation()
         surfaceTexture.setDefaultBufferSize(size.first, size.second)
         val flutterSurface = Surface(surfaceTexture)
@@ -683,7 +683,7 @@ class Camera(
 
 
     fun pauseVideoStreaming(result: MethodChannel.Result) {
-        if (rtmpCamera == null || !rtmpCamera!!.isStreaming) {
+        if (!rtmpCamera.isStreaming) {
             result.success(null)
             return
         }
@@ -746,9 +746,9 @@ class Camera(
 
     private val isPortrait: Boolean
         get() {
-            val getOrient = activity!!.getWindowManager().getDefaultDisplay()
+            // val getOrient = activity!!.getWindowManager().getDefaultDisplay()
             val pt = Point()
-            getOrient.getSize(pt)
+            // getOrient.getSize(pt)
 
             if (pt.x == pt.y) {
                 return true
@@ -861,17 +861,25 @@ class Camera(
         }
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
-        val surfaceTexture = flutterTexture.surfaceTexture()
+    /*override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+        val surfaceTexture: SurfaceTexture = flutterTexture.surfaceTexture()
         val size = getSizePairByOrientation()
         surfaceTexture.setDefaultBufferSize(size.first, size.second)
         val flutterSurface = Surface(surfaceTexture)
+    }*/
+
+    override fun surfaceDestroyed(holder: SurfaceHolder) {
     }
 
-    override fun surfaceDestroyed(holder: SurfaceHolder?) {
+    override fun surfaceCreated(holder: SurfaceHolder) {
+
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder?) {
-
+    @SuppressLint("Recycle")
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        val surfaceTexture: SurfaceTexture = flutterTexture.surfaceTexture()
+        val size = getSizePairByOrientation()
+        surfaceTexture.setDefaultBufferSize(size.first, size.second)
+        val flutterSurface = Surface(surfaceTexture)
     }
 }

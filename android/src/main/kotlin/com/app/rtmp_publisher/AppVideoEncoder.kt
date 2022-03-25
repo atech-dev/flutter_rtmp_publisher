@@ -218,8 +218,12 @@ class AppVideoEncoder(
     private fun sendSPSandPPS(mediaFormat: MediaFormat) {
         //H265
         if (type!!.equals(CodecUtil.H265_MIME)) {
-            val byteBufferList = extractVpsSpsPpsFromH265(mediaFormat.getByteBuffer("csd-0"))
-            getVideoData.onSpsPpsVps(byteBufferList!![1], byteBufferList[2], byteBufferList[0])
+            val byteBuffer: ByteBuffer? = mediaFormat.getByteBuffer("csd-0");
+            if(byteBuffer != null) {
+                val byteBufferList = extractVpsSpsPpsFromH265(byteBuffer)
+                getVideoData.onSpsPpsVps(byteBufferList!![1], byteBufferList[2], byteBufferList[0])
+            }
+
             //H264
         } else {
             getVideoData.onSpsPps(mediaFormat.getByteBuffer("csd-0"), mediaFormat.getByteBuffer("csd-1"))
@@ -427,7 +431,9 @@ class AppVideoEncoder(
         } else {
             mediaCodec.getOutputBuffers().get(outBufferIndex)
         }
-        processOutput(byteBuffer, mediaCodec, outBufferIndex, bufferInfo)
+        if(byteBuffer != null) {
+            processOutput(byteBuffer, mediaCodec, outBufferIndex, bufferInfo)
+        }
     }
 
     companion object {
