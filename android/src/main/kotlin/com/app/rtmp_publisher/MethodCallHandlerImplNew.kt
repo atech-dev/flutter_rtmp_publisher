@@ -41,10 +41,12 @@ class MethodCallHandlerImplNew(
         methodChannel.setMethodCallHandler(this)
         nativeViewFactory = NativeViewFactory(activity)
 
-        flutterEngine
-                .platformViewsController
-                .registry
-                .registerViewFactory("hybrid-view-type", nativeViewFactory)
+        if(nativeViewFactory != null) {
+                flutterEngine
+                        .platformViewsController
+                        .registry
+                        .registerViewFactory("hybrid-view-type", nativeViewFactory)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
